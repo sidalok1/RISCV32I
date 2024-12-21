@@ -1,13 +1,13 @@
 `timescale 1ns / 1ps
 module registerFile(
+    input clk,
     input [4:0] rs1,
     input [4:0] rs2,
     input [4:0] rd,
     input [31:0] data_in,
     output reg [31:0] data_1,
     output reg [31:0] data_2,
-    input RegWrite,
-    input clk
+    input RegWrite
     );
 
     reg [0:30] regs [31:0];
@@ -18,16 +18,18 @@ module registerFile(
         end
     end
 
-    always @ (posedge clk) begin
-        if (RegWrite) begin
-            regs[rd] <= data_in;
-        end
+    always @ ( rs1 or rs2 ) begin
+
         if (rs1 != 0) begin
-            data_1 <= regs[rs1];
-        end else data_1 <= 32'b0;
+            data_1 = regs[rs1];
+        end else data_1 = 32'b0;
         if (rs2 != 0) begin
-            data_2 <= regs[rs2];
-        end else data_2 <= 32'b0;
+            data_2 = regs[rs2];
+        end else data_2 = 32'b0;
+    end
+
+    always @ ( posedge clk ) begin
+        if ( RegWrite ) regs[rd] = data_in;
     end
 
 endmodule

@@ -1,5 +1,4 @@
-module InstructionMemory(
-    input wire clk,
+module instructionMemory(
     input wire [31:0] address,
     output wire [31:0] instruction
 );
