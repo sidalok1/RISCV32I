@@ -18,6 +18,7 @@ module mainBus(input clk);
     wire MemWriteSIG;
     wire MemReadSIG;
     wire MemToRegSIG;
+    wire BranchSIG;
     controller cont(
         .opcode(instruction[6:0]),
         .RegWrite(RegWriteSIG),
@@ -25,7 +26,8 @@ module mainBus(input clk);
         .ALUOp(ALUOpSIG),
         .MemWrite(MemWriteSIG),
         .MemRead(MemReadSIG),
-        .MemToReg(MemToRegSIG)
+        .MemToReg(MemToRegSIG),
+        .Branch(BranchSIG)
     );
 
     wire [3:0] FU1_SIG;

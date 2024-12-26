@@ -27,7 +27,8 @@ module controller(
     output reg [1:0] ALUOp,
     output reg MemWrite,
     output reg MemRead,
-    output reg MemToReg
+    output reg MemToReg,
+    output reg Branch
     );
 
     always @ (opcode) begin
@@ -39,6 +40,7 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
+                Branch = 'b0;
             end
             'b0010011 : begin //I-type: ORI, SRAI
                 ALUSrc = 'b1;
@@ -47,6 +49,7 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
+                Branch = 'b0;
             end
             'b0110111 : begin //U-type: LUI
                 ALUSrc = 'b1;
@@ -55,6 +58,7 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
+                Branch = 'b0;
             end
             'b0000011 : begin //I-type: Memory loads
                 ALUSrc = 'b1;
@@ -63,6 +67,7 @@ module controller(
                 MemToReg = 'b1;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
+                Branch = 'b0;
             end
             'b0100011 : begin //S-type: Memory stores
                 ALUSrc = 'b1;
@@ -71,6 +76,7 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b1;
                 RegWrite = 'b0;
+                Branch = 'b0;
             end
         endcase
     end

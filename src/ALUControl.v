@@ -38,6 +38,9 @@ module ALUControl(
                     'h6 : op = 'b0001;
                     'h5 : op = {1'b1, 1'b0, 1'b0, funct7[5]};
                     'h4 : op = 'b0101;
+                    'h3 : op = 'b1101;
+                    'h2 : op = 'b1100;
+                    'h1 : op = 'b1010;
                 endcase
             end
         endcase
