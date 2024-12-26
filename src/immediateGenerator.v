@@ -4,7 +4,7 @@ module immediateGenerator (
 );
 
     always @ (instruction) begin
-        case (instruction)
+        case (instruction[6:0])
             'b0010011,
             'b0000011,
             'b1110011 : imm = {{20{instruction[31]}}, instruction[31:20]}; //I type
