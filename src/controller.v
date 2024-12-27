@@ -28,7 +28,9 @@ module controller(
     output reg MemWrite,
     output reg MemRead,
     output reg MemToReg,
-    output reg Branch
+    output reg Branch,
+    output reg Link,
+    output reg BranchFromPC
     );
 
     always @ (opcode) begin
@@ -40,7 +42,6 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
-                Branch = 'b0;
             end
             'b0010011 : begin //I-type: ADDI, XORI, ORI, ANDI, SLLI, SRLI, SRAI, SLTI, SLTIU
                 ALUSrc = 'b1;
@@ -49,7 +50,6 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
-                Branch = 'b0;
             end
             'b0110111 : begin //U-type: LUI
                 ALUSrc = 'b1;
@@ -58,7 +58,6 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
-                Branch = 'b0;
             end
             'b0000011 : begin //I-type: LB, LW
                 ALUSrc = 'b1;
@@ -67,7 +66,6 @@ module controller(
                 MemToReg = 'b1;
                 MemWrite = 'b0;
                 RegWrite = 'b1;
-                Branch = 'b0;
             end
             'b0100011 : begin //S-type: SB SW
                 ALUSrc = 'b1;
@@ -76,7 +74,6 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b1;
                 RegWrite = 'b0;
-                Branch = 'b0;
             end
             'b1100011 : begin //B-type: BEQ
                 ALUSrc = 'b0;
@@ -85,9 +82,28 @@ module controller(
                 MemToReg = 'b0;
                 MemWrite = 'b0;
                 RegWrite = 'b0;
-                Branch = 'b1;
+            end
+            'b1100111, //JALR
+            'b1101111 : begin //J-type: JAL
+                ALUSrc = 'b0;
+                ALUOp = 'b11;
+                MemRead = 'b0;
+                MemToReg = 'b0;
+                MemWrite = 'b0;
+                RegWrite = 'b1;
             end
         endcase
+
+        if (opcode[6:4] == 'b110) begin
+            Branch = 1;
+            Link = (opcode[2]) ? 1 : 0;
+            BranchFromPC = (opcode[2]) ? (opcode[3]) : 1;
+        end
+        else  begin
+            Branch = 0;
+            Link = 0;
+            BranchFromPC = 0;
+        end
     end
 
 endmodule

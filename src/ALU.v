@@ -23,9 +23,10 @@ module ALU (
             'b1000: out = in1 >> in2; //SRL
             'b1001: out = in1 >>> in2; //SRA
             'b0101: out = in1 ^ in2; //XOR
-            'b1100: out = in1Signed <= in2Signed; //SLT
-            'b1101: out = in1 <= in2; //SLTU
+            'b1100: out = in1Signed < in2Signed; //SLT
+            'b1101: out = in1 < in2; //SLTU
             'b1010: out = in1 << in2; //SLL
+            'b1111: out = 0;
         endcase
     end
 

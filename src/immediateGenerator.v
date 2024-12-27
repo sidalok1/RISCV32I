@@ -16,7 +16,7 @@ module immediateGenerator (
             'b1100011 : 
                 imm = {{20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0}; //B type
             'b1101111 : 
-                imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:25], inst[11:8], 1'b0}; //J type
+                imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0}; //J type
             'b0110111, 'b0010111 : 
                 imm = {inst[31:12], 12'b0}; //U type
         endcase

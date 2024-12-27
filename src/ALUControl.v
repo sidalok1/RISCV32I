@@ -5,10 +5,16 @@ module ALUControl(
     input [6:0] funct7
     );
 
-    always @ ( ALU_Op or funct3 or funct7) begin
+    always @ ( ALU_Op or funct3 or funct7 ) begin
         case (ALU_Op)
             'b00 : op = 'b0010;
-            'b01 : op = 'b0110;
+            'b01 : begin
+                case (funct3)
+                    'h0, 'h1 : op = 'b0110;
+                    'h4, 'h5 : op = 'b1100;
+                    'h6, 'h7 : op = 'b1101;
+                endcase
+            end
             'b10 : begin
                 case (funct3)
                     'h0 : op = {1'b0, funct7[5], 1'b1, 1'b0};
@@ -21,6 +27,7 @@ module ALUControl(
                     'h1 : op = 'b1010;
                 endcase
             end
+            'b11 : op = 'b1111;
         endcase
     end
 
