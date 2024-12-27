@@ -67,7 +67,7 @@ module controller(
                 MemWrite = 'b0;
                 RegWrite = 'b1;
             end
-            'b0100011 : begin //S-type: SB SW
+            'b0100011 : begin //S-type: SB, SW
                 ALUSrc = 'b1;
                 ALUOp = 'b00;
                 MemRead = 'b0;
@@ -84,7 +84,7 @@ module controller(
                 RegWrite = 'b0;
             end
             'b1100111, //JALR
-            'b1101111 : begin //J-type: JAL
+            'b1101111 : begin //J-type: JAL, JALR
                 ALUSrc = 'b0;
                 ALUOp = 'b11;
                 MemRead = 'b0;

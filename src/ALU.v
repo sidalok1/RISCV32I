@@ -21,7 +21,7 @@ module ALU (
             'b0010: out = in1Signed + in2Signed; //ADD
             'b0110: out = in1Signed - in2Signed; //SUB
             'b1000: out = in1 >> in2; //SRL
-            'b1001: out = in1 >>> in2; //SRA
+            'b1001: out = in1Signed >>> in2Signed; //SRA
             'b0101: out = in1 ^ in2; //XOR
             'b1100: out = in1Signed < in2Signed; //SLT
             'b1101: out = in1 < in2; //SLTU
