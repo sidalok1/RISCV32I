@@ -22,9 +22,11 @@
 
 module controller(
     input [6:0] opcode,
+    input [2:0] funct3,
+    input [6:0] funct7,
     output reg RegWrite,
     output reg ALUSrc,
-    output reg [1:0] ALUOp,
+    output reg [3:0] ALUOp,
     output reg MemWrite,
     output reg MemRead,
     output reg MemToReg,
@@ -33,72 +35,94 @@ module controller(
     output reg BranchFromPC
     );
 
-    always @ (opcode) begin
+    always @ ( opcode or funct3 or funct7 ) begin
         case (opcode)
-            'b0110011 : begin //R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
-                ALUSrc = 'b0;
-                ALUOp = 'b10;
-                MemRead = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b0;
-                RegWrite = 'b1;
+            7'b0110011 : begin //R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
+                ALUSrc = 0;
+                case (funct3)
+                    'h7 : ALUOp = 4'b0000;
+                    'h6 : ALUOp = 4'b0001;
+                    'h5 : ALUOp = {1'b1, 1'b0, 1'b0, funct7[5]};
+                    'h4 : ALUOp = 4'b0101;
+                    'h3 : ALUOp = 4'b1101;
+                    'h2 : ALUOp = 4'b1100;
+                    'h1 : ALUOp = 4'b1010;
+                    'h0 : ALUOp = {1'b0, funct7[5], 1'b1, 1'b0};
+                endcase
+                MemRead = 0;
+                MemToReg = 0;
+                MemWrite = 0;
+                RegWrite = 1;
             end
-            'b0010011 : begin //I-type: ADDI, XORI, ORI, ANDI, SLLI, SRLI, SRAI, SLTI, SLTIU
-                ALUSrc = 'b1;
-                ALUOp = 'b10;
-                MemRead = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b0;
-                RegWrite = 'b1;
+            7'b0010011 : begin //I-type: ADDI, XORI, ORI, ANDI, SLLI, SRLI, SRAI, SLTI, SLTIU
+                ALUSrc = 1;
+                case (funct3)
+                    'h7 : ALUOp = 4'b0000;
+                    'h6 : ALUOp = 4'b0001;
+                    'h5 : ALUOp = {1'b1, 1'b0, 1'b0, funct7[5]};
+                    'h4 : ALUOp = 4'b0101;
+                    'h3 : ALUOp = 4'b1101;
+                    'h2 : ALUOp = 4'b1100;
+                    'h1 : ALUOp = 4'b1010;
+                    'h0 : ALUOp = 4'b0010;
+                endcase
+                MemRead = 0;
+                MemToReg = 0;
+                MemWrite = 0;
+                RegWrite = 1;
             end
-            'b0110111 : begin //U-type: LUI
-                ALUSrc = 'b1;
-                ALUOp = 'b00;
-                MemRead = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b0;
-                RegWrite = 'b1;
+            7'b0110111 : begin //U-type: LUI
+                ALUSrc = 1;
+                ALUOp = 4'b0010;
+                MemRead = 0;
+                MemToReg = 0;
+                MemWrite = 0;
+                RegWrite = 1;
             end
-            'b0000011 : begin //I-type: LB, LW
-                ALUSrc = 'b1;
-                ALUOp = 'b00;
-                MemRead = 'b1;
-                MemToReg = 'b1;
-                MemWrite = 'b0;
-                RegWrite = 'b1;
+            7'b0000011 : begin //I-type: LB, LW
+                ALUSrc = 1;
+                ALUOp = 4'b0010;
+                MemRead = 1;
+                MemToReg = 1;
+                MemWrite = 0;
+                RegWrite = 1;
             end
-            'b0100011 : begin //S-type: SB, SW
-                ALUSrc = 'b1;
-                ALUOp = 'b00;
-                MemRead = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b1;
-                RegWrite = 'b0;
+            7'b0100011 : begin //S-type: SB, SW
+                ALUSrc = 1;
+                ALUOp = 4'b0010;
+                MemRead = 0;
+                MemToReg = 0;
+                MemWrite = 1;
+                RegWrite = 0;
             end
-            'b1100011 : begin //B-type: BEQ
-                ALUSrc = 'b0;
-                ALUOp = 'b01;
-                MemRead = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b0;
-                RegWrite = 'b0;
+            7'b1100011 : begin //B-type: BEQ
+                ALUSrc = 0;
+                case (funct3)
+                    'h7, 'h6 : ALUOp = 4'b1101;
+                    'h5, 'h4 : ALUOp = 4'b1100;
+                    'h1, 'h0 : ALUOp = 4'b0110;
+                endcase
+                MemRead = 0;
+                MemToReg = 0;
+                MemWrite = 0;
+                RegWrite = 0;
             end
-            'b1100111, //JALR
-            'b1101111 : begin //J-type: JAL, JALR
-                ALUSrc = 'b0;
-                ALUOp = 'b11;
-                MemRead = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b0;
-                RegWrite = 'b1;
+            7'b1100111, //JALR
+            7'b1101111 : begin //J-type: JAL, JALR
+                ALUSrc = 0;
+                ALUOp = 4'b1111;
+                MemRead = 0;
+                MemToReg = 0;
+                MemWrite = 0;
+                RegWrite = 1;
             end
             default : begin //NOP
-                ALUSrc = 'b0;
-                ALUOp = 'b11;
-                MemRead = 'b0;
-                MemWrite = 'b0;
-                MemToReg = 'b0;
-                MemWrite = 'b0;
+                ALUSrc = 0;
+                ALUOp = 4'b1111;
+                MemRead = 0;
+                MemWrite = 0;
+                MemToReg = 0;
+                MemWrite = 0;
                 RegWrite = 0;
             end
         endcase

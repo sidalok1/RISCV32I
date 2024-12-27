@@ -17,12 +17,10 @@ module mainBus(input clk);
     //controller wires
     wire RegWriteSIG;
     wire ALUSrcSIG;
-    wire [1:0] ALUOpSIG;
+    wire [3:0] ALUOpSIG;
     wire MemWriteSIG;
     wire MemReadSIG;
     wire MemToRegSIG;
-
-    wire [3:0] FU1_SIG;
 
     //register file wires
     wire [31:0] regFileRead1;
@@ -62,6 +60,8 @@ module mainBus(input clk);
     //Controller modules
     controller cont(
         .opcode(instruction[6:0]),
+        .funct3(instruction[14:12]),
+        .funct7(instruction[31:25]),
         .RegWrite(RegWriteSIG),
         .ALUSrc(ALUSrcSIG),
         .ALUOp(ALUOpSIG),
@@ -73,12 +73,6 @@ module mainBus(input clk);
         .BranchFromPC(BranchOriginSIG)
     );
 
-    ALUControl FU1_control(
-        .ALU_Op(ALUOpSIG),
-        .op(FU1_SIG),
-        .funct3(instruction[14:12]),
-        .funct7(instruction[31:25])
-    );
 
     //Register File module
     registerFile regFile(
@@ -99,7 +93,7 @@ module mainBus(input clk);
     ALU FU1(
         .in1(regFileRead1),
         .in2(ALUdata2),
-        .operation(FU1_SIG),
+        .operation(ALUOpSIG),
         .out(FU1_data),
         .zero(FU1_zero)
     );
