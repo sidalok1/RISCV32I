@@ -9,8 +9,8 @@ module TB();
     initial begin
         clk = 0;
         $dumpfile("signals.vcd"); // Name of the signal dump file
-        $dumpvars(0, TB); // Signals to dump
-        #1000;  // Simulation time
+        $dumpvars(0, TB, TB.core.regFile.regs[10], TB.core.regFile.regs[11]); // Signals to dump
+        #500;  // Simulation time
         $finish();
     end
 

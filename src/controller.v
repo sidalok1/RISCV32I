@@ -33,7 +33,7 @@ module controller(
 
     always @ (opcode) begin
         case (opcode)
-            'b0110011 : begin //R-type: ADD, XOR
+            'b0110011 : begin //R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
                 ALUSrc = 'b0;
                 ALUOp = 'b10;
                 MemRead = 'b0;
@@ -42,7 +42,7 @@ module controller(
                 RegWrite = 'b1;
                 Branch = 'b0;
             end
-            'b0010011 : begin //I-type: ORI, SRAI
+            'b0010011 : begin //I-type: ADDI, XORI, ORI, ANDI, SLLI, SRLI, SRAI, SLTI, SLTIU
                 ALUSrc = 'b1;
                 ALUOp = 'b10;
                 MemRead = 'b0;
@@ -60,7 +60,7 @@ module controller(
                 RegWrite = 'b1;
                 Branch = 'b0;
             end
-            'b0000011 : begin //I-type: Memory loads
+            'b0000011 : begin //I-type: LB, LW
                 ALUSrc = 'b1;
                 ALUOp = 'b00;
                 MemRead = 'b1;
@@ -69,7 +69,7 @@ module controller(
                 RegWrite = 'b1;
                 Branch = 'b0;
             end
-            'b0100011 : begin //S-type: Memory stores
+            'b0100011 : begin //S-type: SB SW
                 ALUSrc = 'b1;
                 ALUOp = 'b00;
                 MemRead = 'b0;
@@ -77,6 +77,15 @@ module controller(
                 MemWrite = 'b1;
                 RegWrite = 'b0;
                 Branch = 'b0;
+            end
+            'b1100011 : begin //B-type: BEQ
+                ALUSrc = 'b0;
+                ALUOp = 'b01;
+                MemRead = 'b0;
+                MemToReg = 'b0;
+                MemWrite = 'b0;
+                RegWrite = 'b0;
+                Branch = 'b1;
             end
         endcase
     end

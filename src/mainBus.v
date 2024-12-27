@@ -2,11 +2,13 @@ module mainBus(input clk);
 
     wire [31:0] instruction;
 
-    reg [31:0] ProgramCounter;
+    wire [31:0] PC;
+
+    programCounter ProgramCounter(.clk(clk), .PC(PC));
 
     //Instruction Memory module
     instructionMemory instMem(
-        .address(ProgramCounter),
+        .address(PC),
         .instruction(instruction)
     );
 
@@ -56,7 +58,7 @@ module mainBus(input clk);
 
     //Immediate Generator Module
     wire [31:0] immediate;
-    immediateGenerator immGen(.instruction(instruction), .imm(immediate));
+    immediateGenerator immGen(.inst(instruction), .imm(immediate));
 
 
     //ALU modules
@@ -90,13 +92,5 @@ module mainBus(input clk);
     assign regFileWrite = (MemToRegSIG) ? memoryData : FU1_data;
 
     //PC module. Will need to be moved to its own module on implementation of branches
-    initial begin
-        ProgramCounter <= -4;
-    end
 
-    always @ (posedge clk) begin
-
-        ProgramCounter <= ProgramCounter + 4;
-
-    end
 endmodule

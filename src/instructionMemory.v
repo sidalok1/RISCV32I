@@ -5,11 +5,13 @@ module instructionMemory(
 
     reg [7:0] memory [0:4095];
 
+    assign instruction = {memory[address + 3], memory[address + 2], memory[address + 1], memory[address]};
+
     initial begin
         $readmemh("test/instructions.mem", memory);
     end
 
-    assign instruction = {memory[address + 3], memory[address + 2], memory[address + 1], memory[address]};
+
 
 
 

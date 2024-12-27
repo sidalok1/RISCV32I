@@ -10,7 +10,8 @@ module registerFile(
     input RegWrite
     );
 
-    reg [0:30] regs [31:0];
+    reg [31:0] regs [0:31];
+
     integer i;
     initial begin
         for (i = 0; i < 32; i = i + 1) begin
@@ -19,17 +20,12 @@ module registerFile(
     end
 
     always @ ( rs1 or rs2 ) begin
-
-        if (rs1 != 0) begin
-            data_1 = regs[rs1];
-        end else data_1 = 32'b0;
-        if (rs2 != 0) begin
-            data_2 = regs[rs2];
-        end else data_2 = 32'b0;
+        data_1 = regs[rs1];
+        data_2 = regs[rs2];
     end
 
     always @ ( posedge clk ) begin
-        if ( RegWrite ) regs[rd] = data_in;
+        if ( RegWrite && rd ) regs[rd] = data_in;
     end
 
 endmodule
