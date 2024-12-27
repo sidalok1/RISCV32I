@@ -9,7 +9,7 @@ module immediateGenerator (
                 default : imm = {{20{inst[31]}}, inst[31:20]};
                 'h1, 'h5 : imm = {27'b0, inst[24:20]};
             endcase
-            'b0000011, 'b1110011 :
+            'b0000011, 'b1110011, 'b1100111 :
                 imm = {{20{inst[31]}}, inst[31:20]}; //I type
             'b0100011 : 
                 imm = {{20{inst[31]}}, inst[31:25], inst[11:7]}; //S type
@@ -19,6 +19,7 @@ module immediateGenerator (
                 imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0}; //J type
             'b0110111, 'b0010111 : 
                 imm = {inst[31:12], 12'b0}; //U type
+            default : imm = 32'b0;
         endcase
     end
 endmodule

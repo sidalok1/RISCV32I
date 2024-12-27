@@ -92,6 +92,15 @@ module controller(
                 MemWrite = 'b0;
                 RegWrite = 'b1;
             end
+            default : begin //NOP
+                ALUSrc = 'b0;
+                ALUOp = 'b11;
+                MemRead = 'b0;
+                MemWrite = 'b0;
+                MemToReg = 'b0;
+                MemWrite = 'b0;
+                RegWrite = 0;
+            end
         endcase
 
         if (opcode[6:4] == 'b110) begin
