@@ -32,7 +32,8 @@ module controller(
     output reg MemToReg,
     output reg Branch,
     output reg Link,
-    output reg BranchFromPC
+    output reg BranchFromPC,
+    output reg ReverseBranchCondition
     );
 
     always @ ( opcode or funct3 or funct7 ) begin
@@ -98,17 +99,20 @@ module controller(
             7'b1100011 : begin //B-type: BEQ
                 ALUSrc = 0;
                 case (funct3)
-                    'h7, 'h6 : ALUOp = 4'b1101;
-                    'h5, 'h4 : ALUOp = 4'b1100;
-                    'h1, 'h0 : ALUOp = 4'b0110;
+                    'h7 : begin ALUOp = 4'b1101; ReverseBranchCondition = 0; end
+                    'h6 : begin ALUOp = 4'b1101; ReverseBranchCondition = 1; end
+                    'h5 : begin ALUOp = 4'b1100; ReverseBranchCondition = 0; end
+                    'h4 : begin ALUOp = 4'b1100; ReverseBranchCondition = 1; end
+                    'h1 : begin ALUOp = 4'b0110; ReverseBranchCondition = 1; end
+                    'h0 : begin ALUOp = 4'b0110; ReverseBranchCondition = 0; end
                 endcase
                 MemRead = 0;
                 MemToReg = 0;
                 MemWrite = 0;
                 RegWrite = 0;
             end
-            7'b1100111, //JALR
-            7'b1101111 : begin //J-type: JAL, JALR
+            7'b1100111, //I-type: JALR
+            7'b1101111 : begin //J-type: JAL
                 ALUSrc = 0;
                 ALUOp = 4'b1111;
                 MemRead = 0;

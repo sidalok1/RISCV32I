@@ -10,6 +10,7 @@ module mainBus(input clk);
     wire BranchSIG;
     wire LinkSIG;
     wire BranchOriginSIG;
+    wire ReverseSIG;
 
     //instruction wires
     wire [31:0] instruction;
@@ -70,7 +71,8 @@ module mainBus(input clk);
         .MemToReg(MemToRegSIG),
         .Branch(BranchSIG),
         .Link(LinkSIG),
-        .BranchFromPC(BranchOriginSIG)
+        .BranchFromPC(BranchOriginSIG),
+        .ReverseBranchCondition(ReverseSIG)
     );
 
 
@@ -112,7 +114,7 @@ module mainBus(input clk);
     initial PC = 0;
 
     always @ (posedge clk) begin
-        if (BranchSIG && FU1_zero)
+        if (BranchSIG && (FU1_zero ^ ReverseSIG))
             PC <= branchAddress;
         else
             PC <= linkAddress;
