@@ -116,7 +116,7 @@ module controller(
                 MemWrite = 0;
                 RegWrite = 1;
             end
-            default : begin //NOP
+            default : begin //NOP, though according to spec, a nop is implemented as addi, x0, x0, 0
                 ALUSrc = 0;
                 ALUOp = 4'b1111;
                 MemRead = 0;

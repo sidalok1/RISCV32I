@@ -28,7 +28,7 @@ module mainBus(input clk);
     wire [31:0] regFileWrite;
 
     wire [31:0] immediate;
-    assign branchAddress = (BranchOriginSIG) ? PC + immediate : regFileRead1 + immediate;
+    assign branchAddress = (BranchOriginSIG) ? PC + immediate : (regFileRead1 + immediate) & -32'd2;
     //ALU wires
     wire [31:0] ALUdata2;
     assign ALUdata2 = (ALUSrcSIG) ?
