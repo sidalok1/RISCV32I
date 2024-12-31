@@ -1,5 +1,5 @@
 default: signals.vcd
-	gtkwave signals.vcd
+	gtkwave signals.vcd memView.sav
 
 signals.vcd: sim
 	vvp sim

@@ -8,7 +8,9 @@ module dataMemory(
     output reg [31:0] readData
 );
 
-    reg [7:0] memory [0:4095];
+    localparam WORD = 3'h0, HALF = 3'h1, BYTE = 3'h2, UBYTE = 3'h4, UHALF = 3'h5;
+
+    reg [7:0] memory [0:4096-1];
     wire [31:0] data;
 
     wire [31:0] word;
@@ -24,32 +26,23 @@ module dataMemory(
         for (i = 0; i < 4096; i = i + 1) memory[i] = 8'b0;
     end
 
-    always @ ( address or writeData ) begin //load
-        case (funct3)
-            'h0:  //byte
-                if (MemRead) readData = {{24{byte[7]}}, byte};
-            'h1:  //halfword
-                if (MemRead) readData = {{16{byte[7]}}, half};
-            'h2:  //word
-                if (MemRead) readData = word;
-            'h4:  //byte (unsigned)
-                if (MemRead) readData = {24'b0, byte};
-            'h5: //halfword (unsigned)
-                if (MemRead) readData = {16'b0, half};
-        endcase
+    always @ ( negedge clk ) begin //load
+        if (MemRead)
+            case (funct3)
+                WORD:   readData <= {{24{byte[7]}}, byte};
+                HALF:   readData <= {{16{byte[7]}}, half};
+                BYTE:   readData <= word;
+                UBYTE:  readData <= {24'b0, byte};
+                UHALF:  readData <= {16'b0, half};
+            endcase
     end
 
     always @ ( posedge clk ) begin //store
-        case (funct3)
-            'h0: //byte
-                if (MemWrite)
-                    memory[address] = writeData[7:0];
-            'h1: //halfword
-                if (MemWrite)
-                    {memory[address + 1], memory[address]} = writeData[15:0];
-            'h2: //word
-                if (MemWrite)
-                    {memory[address + 3], memory[address + 2], memory[address + 1], memory[address]} = writeData;
-        endcase
+        if (MemWrite)
+            case (2 - funct3)
+                BYTE: memory[address] <= writeData[7:0];
+                HALF: {memory[address + 1], memory[address]} <= writeData[15:0];
+                WORD: {memory[address + 3], memory[address + 2], memory[address + 1], memory[address]} <= writeData;
+            endcase
     end
 endmodule
