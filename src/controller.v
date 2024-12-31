@@ -4,7 +4,7 @@ module controller(
     input [2:0] funct3,
     input [6:0] funct7,
     output reg RegWrite,
-    output reg ALUSrc,
+    output reg [1:0] ALUSrc,
     output reg [3:0] ALUOp,
     output reg MemWrite,
     output reg MemRead,
@@ -18,7 +18,7 @@ module controller(
     always @ ( opcode or funct3 or funct7 ) begin
         case (opcode)
             7'b0110011 : begin //R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
-                ALUSrc = 0;
+                ALUSrc = 2'b00;
                 case (funct3)
                     'h7 : ALUOp = 4'b0000;
                     'h6 : ALUOp = 4'b0001;
@@ -51,8 +51,9 @@ module controller(
                 MemWrite = 0;
                 RegWrite = 1;
             end
-            7'b0110111 : begin //U-type: LUI
-                ALUSrc = 1;
+            7'b0110111, //U-type: LUI
+            7'b0010111 : begin //U-type: AUIPC
+                ALUSrc = {~opcode[5], 1'b1};
                 ALUOp = 4'b0010;
                 MemRead = 0;
                 MemToReg = 0;
@@ -60,7 +61,7 @@ module controller(
                 RegWrite = 1;
             end
             7'b0000011 : begin //I-type: LB, LW
-                ALUSrc = 1;
+                ALUSrc = 2'b01;
                 ALUOp = 4'b0010;
                 MemRead = 1;
                 MemToReg = 1;
@@ -68,7 +69,7 @@ module controller(
                 RegWrite = 1;
             end
             7'b0100011 : begin //S-type: SB, SW
-                ALUSrc = 1;
+                ALUSrc = 2'b01;
                 ALUOp = 4'b0010;
                 MemRead = 0;
                 MemToReg = 0;
@@ -76,7 +77,7 @@ module controller(
                 RegWrite = 0;
             end
             7'b1100011 : begin //B-type: BEQ
-                ALUSrc = 0;
+                ALUSrc = 2'b00;
                 case (funct3)
                     'h7 : begin ALUOp = 4'b1101; ReverseBranchCondition = 0; end
                     'h6 : begin ALUOp = 4'b1101; ReverseBranchCondition = 1; end
@@ -92,7 +93,7 @@ module controller(
             end
             7'b1100111, //I-type: JALR
             7'b1101111 : begin //J-type: JAL
-                ALUSrc = 0;
+                ALUSrc = 2'b00;
                 ALUOp = 4'b1111;
                 MemRead = 0;
                 MemToReg = 0;
@@ -100,7 +101,7 @@ module controller(
                 RegWrite = 1;
             end
             default : begin //NOP, though according to spec, a nop is implemented as addi, x0, x0, 0
-                ALUSrc = 0;
+                ALUSrc = 2'b00;
                 ALUOp = 4'b1111;
                 MemRead = 0;
                 MemWrite = 0;

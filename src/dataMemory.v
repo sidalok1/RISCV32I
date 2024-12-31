@@ -10,7 +10,7 @@ module dataMemory(
 
     localparam WORD = 3'h0, HALF = 3'h1, BYTE = 3'h2, UBYTE = 3'h4, UHALF = 3'h5;
 
-    reg [7:0] memory [0:4096-1];
+    reg [7:0] memory [0:4095];
     wire [31:0] data;
 
     wire [31:0] word;

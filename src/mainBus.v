@@ -17,7 +17,7 @@ module mainBus(input clk);
 
     //controller wires
     wire RegWriteSIG;
-    wire ALUSrcSIG;
+    wire [1:0] ALUSrcSIG;
     wire [3:0] ALUOpSIG;
     wire MemWriteSIG;
     wire MemReadSIG;
@@ -31,8 +31,13 @@ module mainBus(input clk);
     wire [31:0] immediate;
     assign branchAddress = (BranchOriginSIG) ? PC + immediate : (regFileRead1 + immediate) & -32'd2;
     //ALU wires
+    wire [31:0] ALUdata1;
+    assign ALUdata1 = (ALUSrcSIG[1]) ?
+        PC
+            :
+        regFileRead1;
     wire [31:0] ALUdata2;
-    assign ALUdata2 = (ALUSrcSIG) ?
+    assign ALUdata2 = (ALUSrcSIG[0]) ?
         immediate
             :
         regFileRead2;
@@ -93,7 +98,7 @@ module mainBus(input clk);
 
     //ALU modules
     ALU FU1(
-        .in1(regFileRead1),
+        .in1(ALUdata1),
         .in2(ALUdata2),
         .operation(ALUOpSIG),
         .out(FU1_data),
