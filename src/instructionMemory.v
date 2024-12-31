@@ -8,7 +8,7 @@ module instructionMemory(
     assign instruction = {memory[address + 3], memory[address + 2], memory[address + 1], memory[address]};
 
     initial begin
-        $readmemh("test/instructions.mem", memory);
+        $readmemh("test/init.mem", memory);
     end
 
 

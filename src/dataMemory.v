@@ -24,6 +24,7 @@ module dataMemory(
     integer i;
     initial begin
         for (i = 0; i < 4096; i = i + 1) memory[i] = 8'b0;
+        $readmemh("test/init.mem", memory);
     end
 
     always @ ( negedge clk ) begin //load
