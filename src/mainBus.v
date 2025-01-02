@@ -57,12 +57,6 @@ module mainBus(input clk);
 
     //MODULE INSTANTIATIONS
 
-    //Instruction Memory module
-    instructionMemory instMem(
-        .address(PC),
-        .instruction(instruction)
-    );
-
     //Controller modules
     controller cont(
         .opcode(instruction[6:0]),
@@ -113,7 +107,9 @@ module mainBus(input clk);
         .MemWrite(MemWriteSIG),
         .MemRead(MemReadSIG),
         .writeData(regFileRead2),
-        .readData(memoryData)
+        .readData(memoryData),
+        .PC(PC),
+        .instruction(instruction)
     );
 
     initial #1 PC = 0;
