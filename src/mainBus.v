@@ -116,7 +116,7 @@ module mainBus(input clk);
         .readData(memoryData)
     );
 
-    initial PC = 0;
+    initial #1 PC = 0;
 
     always @ (posedge clk) begin
         if (BranchSIG && (FU1_zero ^ ReverseSIG))

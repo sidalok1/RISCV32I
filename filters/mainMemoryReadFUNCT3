@@ -1,0 +1,17 @@
+# funct3 codes for memory writes
+0001 ?darkgreen?byte
+0011 ?darkgreen?halfword
+0101 ?darkgreen?word
+0111 ?darkyellow?011
+1001 ?darkgreen?unsigned byte
+1011 ?darkgreen?unsigned halfword
+1101 ?darkyellow?110
+1111 ?darkyellow?111
+0000 ?darkred?000
+0010 ?darkred?001
+0100 ?darkred?010
+0110 ?darkred?011
+1000 ?darkred?100
+1010 ?darkred?101
+1100 ?darkred?110
+1110 ?darkred?111

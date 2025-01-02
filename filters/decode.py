@@ -124,8 +124,11 @@ class instruction:
                                     self.op = "srli"
                             else: self.op = f3
                         elif op == "load":
+                            self.type = "LI"
                             self.op = lopfunct3[funct3]
-                        else: self.op = op
+                        else:
+                            self.type = "JI"
+                            self.op = op
                     case "S":
                         self.type = "S"
                         self.rs1 = int(rs1, 2)
@@ -172,7 +175,7 @@ class instruction:
         match self.type:
             case "R":
                 return f"{self.op:<4} x{self.rd}, x{self.rs1}, x{self.rs2}"
-            case "I":
+            case "I" | "LI" | "JI":
                 return f"{self.op:<4} x{self.rd}, x{self.rs1}, {self.imm}"
             case "S":
                 return f"{self.op:<4} x{self.rs2}, {self.imm}({self.rs1})"

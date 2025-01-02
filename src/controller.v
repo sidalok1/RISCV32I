@@ -99,6 +99,7 @@ module controller(
                 MemToReg = 0;
                 MemWrite = 0;
                 RegWrite = 1;
+                ReverseBranchCondition = 0;
             end
             default : begin //NOP, though according to spec, a nop is implemented as addi, x0, x0, 0
                 ALUSrc = 2'b00;

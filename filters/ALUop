@@ -1,0 +1,12 @@
+# ALU Operation Codes
+0000 ?dark blue?AND
+0001 ?dark cyan?OR
+0010 ?dark goldenrod?ADD
+0110 ?dark green?SUB
+1000 ?dark khaki?SRL
+1001 ?dark magenta?SRA
+0101 ?dark orange?XOR
+1100 ?dark orchid?SLT
+1101 ?dark red?SLTU
+1010 ?dark sea green?SLL
+1111 NOP

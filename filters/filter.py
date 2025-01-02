@@ -2,8 +2,21 @@
 import sys
 from decode import instruction as dis
 
+colors = {
+    "R":"?dark red?",
+    "I":"?dark goldenrod?",
+    "LI":"?dark olive green?",
+    "S":"?dark magenta?",
+    "B":"?dark blue?",
+    "JI":"?dark violet?",
+    "J":"?dark violet?",
+    "U":"?dark orange?"
+}
+
 def disassemble(instr):
-    return dis(instr).__repr__()
+    instruction = dis(instr)
+    color = colors.get(instruction.type,"")
+    return color + instruction.__repr__()
 
 def main():
     while True:
