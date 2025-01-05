@@ -17,6 +17,7 @@ module registerFile(
         for (i = 0; i < 32; i = i + 1) begin
             regs[i] = 32'b0;
         end
+        regs[2] = 32'hC00; //sp
         regs[3] = 32'h400; //gp
     end
 
